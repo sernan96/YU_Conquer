@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "150098481921",
+    "project_id": "yu-conquer",
+    "storage_bucket": "yu-conquer.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:150098481921:android:f4b7d9e357b00176320100",
+        "android_client_info": {
+          "package_name": "com.example.conquer"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBB28x5-vgAjKPoaEoajXTEB_mHeRQMvrs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
