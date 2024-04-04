@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:conquer/pages/home_page.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
@@ -43,7 +42,7 @@ class _LogInState extends State<LogIn> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0XFF3873A4),
+      backgroundColor: Colors.white,
       appBar: AppBar(
         centerTitle: true,
         leading: InkResponse(
@@ -54,20 +53,20 @@ class _LogInState extends State<LogIn> {
           highlightColor: Colors.grey,
           radius: 24,
           child: const Icon(
-            Icons.food_bank_outlined,
+            Icons.arrow_back,
             color: Colors.black,
             size: 40,
           ),
         ),
         title: const Text(
-          '마이 페이지',
+          '로그인',
           style: TextStyle(
             fontSize: 24,
             color: Colors.black,
             fontWeight: FontWeight.w400,
           ),
         ),
-        backgroundColor: const Color(0XFF3873A4),
+        backgroundColor: Colors.white,
         shadowColor: Colors.transparent,
       ),
       body: Column(
@@ -111,7 +110,7 @@ class _LogInState extends State<LogIn> {
                           child: const Text(
                             '로그인',
                             style: TextStyle(
-                              color: Colors.white,
+                              color: Colors.black,
                               fontWeight: FontWeight.w600,
                             ),
                           ),
@@ -127,7 +126,7 @@ class _LogInState extends State<LogIn> {
                           child: const Text(
                             '회원가입',
                             style: TextStyle(
-                              color: Colors.white,
+                              color: Colors.black,
                               fontWeight: FontWeight.w600,
                             ),
                           ),
@@ -140,7 +139,7 @@ class _LogInState extends State<LogIn> {
                           child: const Text(
                             '비밀번호를 찾고 싶어요',
                             style: TextStyle(
-                              color: Colors.white,
+                              color: Colors.black,
                               fontWeight: FontWeight.w600,
                             ),
                           ),

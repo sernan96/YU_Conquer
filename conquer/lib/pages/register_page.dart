@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:conquer/pages/home_page.dart';
 
 void main() {
   runApp(const RegisterApp());
@@ -67,7 +66,7 @@ class _LogInState extends State<Register> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0XFF3873A4),
+      backgroundColor: Colors.white,
       appBar: AppBar(
         centerTitle: true,
         leading: InkResponse(
@@ -83,13 +82,14 @@ class _LogInState extends State<Register> {
             size: 40,
           ),
         ),
-        backgroundColor: const Color(0XFF3873A4),
+        backgroundColor: Colors.white,
         shadowColor: Colors.transparent,
         title: const Text(
           "회원가입",
           style: TextStyle(
             color: Colors.black,
             fontSize: 24,
+            fontWeight: FontWeight.w800,
           ),
         ),
       ),
@@ -106,7 +106,7 @@ class _LogInState extends State<Register> {
               child: Text(
                 "Email",
                 style: TextStyle(
-                  color: Colors.white,
+                  color: Colors.black,
                   fontSize: 15,
                 ),
               ),
@@ -135,7 +135,7 @@ class _LogInState extends State<Register> {
               child: Text(
                 "Username",
                 style: TextStyle(
-                  color: Colors.white,
+                  color: Colors.black,
                   fontSize: 15,
                 ),
               ),
@@ -164,7 +164,7 @@ class _LogInState extends State<Register> {
               child: Text(
                 "Password",
                 style: TextStyle(
-                  color: Colors.white,
+                  color: Colors.black,
                   fontSize: 15,
                 ),
               ),
@@ -194,7 +194,7 @@ class _LogInState extends State<Register> {
               child: Text(
                 "Password(Confirm)",
                 style: TextStyle(
-                  color: Colors.white,
+                  color: Colors.black,
                   fontSize: 15,
                 ),
               ),
@@ -217,6 +217,9 @@ class _LogInState extends State<Register> {
                 obscureText: true,
               ),
             ),
+            const SizedBox(
+              height: 30,
+            ),
             Container(
               alignment: Alignment.centerRight,
               child: TextButton(
@@ -225,8 +228,7 @@ class _LogInState extends State<Register> {
                   '회원가입',
                   style: TextStyle(
                     color: Colors.black,
-                    fontWeight: FontWeight.w600,
-                    backgroundColor: Color.fromARGB(255, 189, 217, 240),
+                    fontWeight: FontWeight.w800,
                   ),
                 ),
               ),

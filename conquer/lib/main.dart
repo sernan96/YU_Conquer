@@ -7,7 +7,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized(); //비동기방식
-  await Firebase.initializeApp();
+  //await Firebase.initializeApp();
   runApp(const HomeApp());
 }
 
@@ -17,7 +17,9 @@ class HomeApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
+        fontFamily: 'TmoneyRoundWind',
         primaryColor: const Color(0xFF376860),
         textSelectionTheme: const TextSelectionThemeData(
           cursorColor: Color(0xFF376860),

@@ -6,11 +6,11 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0XFF3873A4),
+      backgroundColor: Colors.white,
       appBar: AppBar(
         centerTitle: true,
         leading: const Icon(
-          Icons.food_bank_outlined,
+          Icons.home_filled,
           color: Colors.black,
           size: 40,
         ),
@@ -23,7 +23,7 @@ class HomePage extends StatelessWidget {
             ),
           ),
         ),
-        backgroundColor: const Color(0XFF3873A4),
+        backgroundColor: Colors.white,
         shadowColor: Colors.transparent,
         actions: [
           InkWell(
@@ -45,24 +45,20 @@ class HomePage extends StatelessWidget {
         ],
       ),
       body: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: <Widget>[
-          InkWell(
-            onTap: () {
-              Navigator.pushNamed(context, '/login');
-            },
-            child: Container(
-              alignment: Alignment.centerLeft,
-              padding: const EdgeInsets.all(10.0),
-              child: Text(
-                '기능추가할것',
-                style: TextStyle(
-                  color: Colors.grey[900],
-                  fontSize: 16,
-                ),
-              ),
-            ),
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          Image.asset(
+            'assets/images/logo.jpg',
+            width: 330,
+            height: 330,
+          ),
+          const SizedBox(
+            height: 30,
+          ),
+          TextButton(
+            onPressed: () {},
+            child: const Text('시작하기'),
           ),
         ],
       ),
