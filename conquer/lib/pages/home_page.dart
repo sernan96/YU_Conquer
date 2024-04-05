@@ -24,7 +24,7 @@ class HomePage extends StatelessWidget {
           ),
         ),
         backgroundColor: Colors.white,
-        shadowColor: Colors.transparent,
+        shadowColor: Colors.white,
         actions: [
           InkWell(
             onTap: () {
@@ -37,6 +37,7 @@ class HomePage extends StatelessWidget {
                 'MY',
                 style: TextStyle(
                   color: Colors.grey[900],
+                  fontWeight: FontWeight.w700,
                   fontSize: 16,
                 ),
               ),
@@ -58,7 +59,14 @@ class HomePage extends StatelessWidget {
           ),
           TextButton(
             onPressed: () {},
-            child: const Text('시작하기'),
+            child: const Text(
+              '시작하기',
+              style: TextStyle(
+                color: Colors.black,
+                fontSize: 30,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
           ),
         ],
       ),
