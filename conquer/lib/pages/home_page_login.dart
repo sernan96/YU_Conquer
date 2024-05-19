@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 
-class HomePage extends StatelessWidget {
-  const HomePage({Key? key}) : super(key: key);
+void main() {
+  runApp(const HomePage_login());
+}
+
+class HomePage_login extends StatelessWidget {
+  const HomePage_login({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -25,10 +29,10 @@ class HomePage extends StatelessWidget {
         ),
         backgroundColor: Colors.white,
         shadowColor: Colors.white,
-        /*actions: [
+        actions: [
           InkWell(
             onTap: () {
-              Navigator.pushNamed(context, '/login');
+              // Navigator.pushNamed(context, '/login');
             },
             child: Container(
               alignment: Alignment.centerLeft,
@@ -43,10 +47,10 @@ class HomePage extends StatelessWidget {
               ),
             ),
           ),
-        ],*/
+        ],
       ),
       body: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
+        crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           Image.asset(
@@ -57,19 +61,23 @@ class HomePage extends StatelessWidget {
           const SizedBox(
             height: 30,
           ),
-          TextButton(
-            onPressed: () {
-              Navigator.pushNamed(context, '/Home_Page_login');
-            },
-            child: const Text(
-              '로그인',
-              style: TextStyle(
-                color: Colors.black,
-                fontSize: 30,
-                fontWeight: FontWeight.w600,
+          Container(
+            decoration: BoxDecoration(
+              color: Colors.grey[200], // 밝은 회색 배경
+              borderRadius: BorderRadius.circular(10), // 둥근 사각형 모양
+            ),
+            child: TextButton(
+              onPressed: () {},
+              child: const Text(
+                '탐방 완료',
+                style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 30,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
             ),
-          ),
+          )
         ],
       ),
     );

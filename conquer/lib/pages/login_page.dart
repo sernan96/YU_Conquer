@@ -26,7 +26,7 @@ class LogIn extends StatefulWidget {
 class _LogInState extends State<LogIn> {
   final TextEditingController IDController = TextEditingController();
   final TextEditingController PWController = TextEditingController();
-  Future<void> sendData() async {
+  /*Future<void> sendData() async {
     var response = await http.post(
       Uri.parse('http://localhost:3000/'),
       headers: <String, String>{
@@ -38,7 +38,7 @@ class _LogInState extends State<LogIn> {
       }),
     );
   }
-
+*/
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -106,7 +106,9 @@ class _LogInState extends State<LogIn> {
                     Row(
                       children: [
                         TextButton(
-                          onPressed: sendData,
+                          onPressed: () {
+                            Navigator.pushNamed(context, '/home_page_login');
+                          },
                           child: const Text(
                             '로그인',
                             style: TextStyle(
