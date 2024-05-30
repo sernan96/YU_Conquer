@@ -1,65 +1,112 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
-void main() {
-  runApp(const RegisterApp());
-}
-
-class RegisterApp extends StatelessWidget {
-  const RegisterApp({Key? key}) : super(key: key);
+class RegisterPage extends StatefulWidget {
+  const RegisterPage({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    return const Register();
-  }
+  State<RegisterPage> createState() => _RegisterPageState();
 }
 
-class Register extends StatefulWidget {
-  const Register({Key? key}) : super(key: key);
+class _RegisterPageState extends State<RegisterPage> {
+  final TextEditingController regEmailController = TextEditingController();
+  final TextEditingController regUserNameController = TextEditingController();
+  final TextEditingController regPWController = TextEditingController();
+  final TextEditingController regPWConfirmController = TextEditingController();
+  String errorMessage = '';
 
-  @override
-  State<Register> createState() => _LogInState();
-}
+  Future<void> regSendData() async {
+    setState(() {
+      errorMessage = '';
+    });
 
-class _LogInState extends State<Register> {
-  final TextEditingController reg_EmailController = TextEditingController();
-  final TextEditingController reg_UserNameController = TextEditingController();
-  final TextEditingController reg_PWController = TextEditingController();
-  final TextEditingController reg_PWConfirmController = TextEditingController();
-  Future<void> reg_sendData() async {
-    //이메일 형식의 타당성을 검사해줌 젤 먼저 (옳지않은 형식이나 비어있는 경우임)
+    // 이메일 형식의 타당성을 검사
     bool isValidEmail = RegExp(r'^[a-zA-Z0-9._]+@[a-zA-Z0-9]+\.[a-zA-Z]+')
-        .hasMatch(reg_EmailController.text);
-    if (!isValidEmail || reg_EmailController.text.trim().isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('이메일 형식이 유효하지 않습니다.')),
-      );
-      return; // 이메일 형식이 유효하지 않으면 종료
+        .hasMatch(regEmailController.text);
+    if (!isValidEmail || regEmailController.text.trim().isEmpty) {
+      setState(() {
+        errorMessage = '이메일 형식이 유효하지 않습니다.';
+      });
+      return;
     }
-    //username이 공백인지도 검사해줌
-    if (reg_UserNameController.text.trim().isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('사용자 이름을 입력해주세요.')),
-      );
-      return; // 공백이면 함수를 여기서 종료
+
+    // 사용자 이름이 공백인지 검사
+    if (regUserNameController.text.trim().isEmpty) {
+      setState(() {
+        errorMessage = '사용자 이름을 입력해주세요.';
+      });
+      return;
     }
 
     // 비밀번호와 비밀번호 확인이 일치하는지 검사
-    if (reg_PWController.text != reg_PWConfirmController.text) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('비밀번호가 일치하지 않습니다.')),
-      );
-      return; // 일치하지 않으면 종료
+    if (regPWController.text != regPWConfirmController.text) {
+      setState(() {
+        errorMessage = '비밀번호가 일치하지 않습니다.';
+      });
+      return;
     }
 
-    // 비밀번호 타당성 검사 (예시: 최소 8자 이상, 최소 하나의 숫자, 하나의 특수 문자 포함)
+    // 비밀번호 타당성 검사 (예: 최소 8자 이상, 최소 하나의 숫자, 하나의 특수 문자 포함)
     bool isValidPassword = RegExp(
             r'^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$')
-        .hasMatch(reg_PWController.text);
+        .hasMatch(regPWController.text);
     if (!isValidPassword) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('비밀번호가 타당성 요구사항을 충족하지 않습니다.')),
+      setState(() {
+        errorMessage = '비밀번호가 타당성 요구사항을 충족하지 않습니다.';
+      });
+      return;
+    }
+
+    try {
+      // Firebase Authentication을 사용하여 이메일로 회원가입 시도
+      UserCredential userCredential =
+          await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        email: regEmailController.text,
+        password: regPWController.text,
       );
-      return; // 비밀번호가 요구사항을 충족하지 않으면 함수를 여기서 종료
+
+      // Firestore에 사용자 정보 저장
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(userCredential.user!.uid)
+          .set({
+        'username': regUserNameController.text,
+        'email': regEmailController.text,
+      });
+
+      // 사용자 이름을 업데이트
+      await userCredential.user!.updateDisplayName(regUserNameController.text);
+
+      // 회원가입이 성공적으로 완료되면 홈 페이지로 이동
+      print('회원가입 성공: ${userCredential.user!.uid}');
+      if (!mounted) return;
+      Navigator.pushNamed(context, '/home_login');
+    } on FirebaseAuthException catch (e) {
+      // Firebase Auth 오류 메시지 처리
+      setState(() {
+        switch (e.code) {
+          case 'email-already-in-use':
+            errorMessage = '이미 사용 중인 이메일입니다.';
+            break;
+          case 'invalid-email':
+            errorMessage = '유효하지 않은 이메일 형식입니다.';
+            break;
+          case 'operation-not-allowed':
+            errorMessage = '이 작업은 허용되지 않습니다.';
+            break;
+          case 'weak-password':
+            errorMessage = '비밀번호가 너무 약합니다.';
+            break;
+          default:
+            errorMessage = '알 수 없는 Firebase Auth 오류가 발생했습니다: ${e.code}';
+        }
+      });
+    } catch (e) {
+      // 기타 일반 예외 처리
+      setState(() {
+        errorMessage = '알 수 없는 오류가 발생했습니다: ${e.toString()}';
+      });
     }
   }
 
@@ -93,15 +140,18 @@ class _LogInState extends State<Register> {
           ),
         ),
       ),
-      body: Padding(
+      body: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(horizontal: 50.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            const SizedBox(
-              height: 15,
-            ),
+            const SizedBox(height: 15),
+            if (errorMessage.isNotEmpty)
+              Text(
+                errorMessage,
+                style: const TextStyle(color: Colors.red),
+              ),
             const Center(
               child: Text(
                 "Email",
@@ -111,14 +161,12 @@ class _LogInState extends State<Register> {
                 ),
               ),
             ),
-            const SizedBox(
-              height: 10,
-            ),
+            const SizedBox(height: 10),
             SizedBox(
               height: 50,
               child: TextField(
                 expands: false,
-                controller: reg_EmailController,
+                controller: regEmailController,
                 decoration: const InputDecoration(
                   fillColor: Color.fromARGB(255, 199, 195, 195),
                   filled: true,
@@ -128,9 +176,7 @@ class _LogInState extends State<Register> {
                 keyboardType: TextInputType.emailAddress,
               ),
             ),
-            const SizedBox(
-              height: 10,
-            ),
+            const SizedBox(height: 10),
             const Center(
               child: Text(
                 "Username",
@@ -140,14 +186,12 @@ class _LogInState extends State<Register> {
                 ),
               ),
             ),
-            const SizedBox(
-              height: 10,
-            ),
+            const SizedBox(height: 10),
             SizedBox(
               height: 50,
               child: TextField(
                 expands: false,
-                controller: reg_UserNameController,
+                controller: regUserNameController,
                 decoration: const InputDecoration(
                   fillColor: Color.fromARGB(255, 199, 195, 195),
                   filled: true,
@@ -157,9 +201,7 @@ class _LogInState extends State<Register> {
                 keyboardType: TextInputType.name,
               ),
             ),
-            const SizedBox(
-              height: 10,
-            ),
+            const SizedBox(height: 10),
             const Center(
               child: Text(
                 "Password",
@@ -169,27 +211,23 @@ class _LogInState extends State<Register> {
                 ),
               ),
             ),
-            const SizedBox(
-              height: 10,
-            ),
+            const SizedBox(height: 10),
             SizedBox(
               height: 50,
               child: TextField(
                 expands: false,
-                controller: reg_PWController,
+                controller: regPWController,
                 decoration: const InputDecoration(
                   fillColor: Color.fromARGB(255, 199, 195, 195),
                   filled: true,
                   hintText: '규칙: 최소 8자 이상, 최소 하나의 숫자, 하나의 특수 문자 포함',
                   hintStyle: TextStyle(fontSize: 13),
                 ),
-                keyboardType: TextInputType.emailAddress,
+                keyboardType: TextInputType.visiblePassword,
                 obscureText: true,
               ),
             ),
-            const SizedBox(
-              height: 10,
-            ),
+            const SizedBox(height: 10),
             const Center(
               child: Text(
                 "Password(Confirm)",
@@ -199,31 +237,27 @@ class _LogInState extends State<Register> {
                 ),
               ),
             ),
-            const SizedBox(
-              height: 10,
-            ),
+            const SizedBox(height: 10),
             SizedBox(
               height: 50,
               child: TextField(
                 expands: false,
-                controller: reg_PWConfirmController,
+                controller: regPWConfirmController,
                 decoration: const InputDecoration(
                   fillColor: Color.fromARGB(255, 199, 195, 195),
                   filled: true,
                   hintText: '확인용 다시 한번 입력',
                   hintStyle: TextStyle(fontSize: 13),
                 ),
-                keyboardType: TextInputType.emailAddress,
+                keyboardType: TextInputType.visiblePassword,
                 obscureText: true,
               ),
             ),
-            const SizedBox(
-              height: 30,
-            ),
+            const SizedBox(height: 30),
             Container(
               alignment: Alignment.centerRight,
               child: TextButton(
-                onPressed: reg_sendData,
+                onPressed: regSendData,
                 child: const Text(
                   '회원가입',
                   style: TextStyle(

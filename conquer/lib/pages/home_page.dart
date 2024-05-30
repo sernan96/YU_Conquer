@@ -14,36 +14,15 @@ class HomePage extends StatelessWidget {
           color: Colors.black,
           size: 40,
         ),
-        title: const Flexible(
-          child: Text(
-            '영남이의 모험',
-            style: TextStyle(
-              fontSize: 30,
-              color: Colors.black,
-            ),
+        title: const Text(
+          '영남이의 모험',
+          style: TextStyle(
+            fontSize: 30,
+            color: Colors.black,
           ),
         ),
         backgroundColor: Colors.white,
         shadowColor: Colors.white,
-        /*actions: [
-          InkWell(
-            onTap: () {
-              Navigator.pushNamed(context, '/login');
-            },
-            child: Container(
-              alignment: Alignment.centerLeft,
-              padding: const EdgeInsets.all(10.0),
-              child: Text(
-                'MY',
-                style: TextStyle(
-                  color: Colors.grey[900],
-                  fontWeight: FontWeight.w700,
-                  fontSize: 16,
-                ),
-              ),
-            ),
-          ),
-        ],*/
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -59,7 +38,7 @@ class HomePage extends StatelessWidget {
           ),
           TextButton(
             onPressed: () {
-              Navigator.pushNamed(context, '/Home_Page_login');
+              Navigator.pushNamed(context, '/login');
             },
             child: const Text(
               '로그인',

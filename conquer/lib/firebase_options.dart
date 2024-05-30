@@ -27,10 +27,7 @@ class DefaultFirebaseOptions {
       case TargetPlatform.macOS:
         return macos;
       case TargetPlatform.windows:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for windows - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return windows;
       case TargetPlatform.linux:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for linux - '
@@ -72,10 +69,21 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions macos = FirebaseOptions(
     apiKey: 'AIzaSyAtoLHAhfMpHGhJet15IdXgEIwvjMSBT8c',
-    appId: '1:150098481921:ios:5957333b8380b997320100',
+    appId: '1:150098481921:ios:848250dd0f58ffe6320100',
     messagingSenderId: '150098481921',
     projectId: 'yu-conquer',
     storageBucket: 'yu-conquer.appspot.com',
-    iosBundleId: 'com.example.conquer.RunnerTests',
+    iosBundleId: 'com.example.conquer',
   );
+
+  static const FirebaseOptions windows = FirebaseOptions(
+    apiKey: 'AIzaSyDpvXvnPZ8VVEFuq_1eCD0QvMFQRgbEl6w',
+    appId: '1:150098481921:web:10428494f2218ea9320100',
+    messagingSenderId: '150098481921',
+    projectId: 'yu-conquer',
+    authDomain: 'yu-conquer.firebaseapp.com',
+    storageBucket: 'yu-conquer.appspot.com',
+    measurementId: 'G-QM7KW9VE3J',
+  );
+
 }

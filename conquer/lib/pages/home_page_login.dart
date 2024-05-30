@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
-void main() {
-  runApp(const HomePage_login());
-}
+class HomePageLogin extends StatelessWidget {
+  const HomePageLogin({Key? key}) : super(key: key);
 
-class HomePage_login extends StatelessWidget {
-  const HomePage_login({Key? key}) : super(key: key);
+  void _signOut(BuildContext context) async {
+    await FirebaseAuth.instance.signOut();
+    Navigator.pushNamedAndRemoveUntil(
+        context, '/home', (Route<dynamic> route) => false);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -18,34 +21,20 @@ class HomePage_login extends StatelessWidget {
           color: Colors.black,
           size: 40,
         ),
-        title: const Flexible(
-          child: Text(
-            '영남이의 모험',
-            style: TextStyle(
-              fontSize: 30,
-              color: Colors.black,
-            ),
+        title: const Text(
+          '영남이의 모험',
+          style: TextStyle(
+            fontSize: 30,
+            color: Colors.black,
           ),
         ),
         backgroundColor: Colors.white,
         shadowColor: Colors.white,
         actions: [
-          InkWell(
-            onTap: () {
-              // Navigator.pushNamed(context, '/login');
-            },
-            child: Container(
-              alignment: Alignment.centerLeft,
-              padding: const EdgeInsets.all(10.0),
-              child: Text(
-                'MY',
-                style: TextStyle(
-                  color: Colors.grey[900],
-                  fontWeight: FontWeight.w700,
-                  fontSize: 16,
-                ),
-              ),
-            ),
+          IconButton(
+            icon: const Icon(Icons.logout),
+            color: Colors.black,
+            onPressed: () => _signOut(context),
           ),
         ],
       ),
@@ -63,10 +52,13 @@ class HomePage_login extends StatelessWidget {
           ),
           Container(
             decoration: BoxDecoration(
-              color: Colors.grey[200], // 밝은 회색 배경
-              borderRadius: BorderRadius.circular(10), // 둥근 사각형 모양
+              color: Colors.grey[200],
+              borderRadius: BorderRadius.circular(10),
             ),
-            child: TextButton(
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF73D7F7),
+              ),
               onPressed: () {},
               child: const Text(
                 '탐방 완료',
@@ -77,7 +69,24 @@ class HomePage_login extends StatelessWidget {
                 ),
               ),
             ),
-          )
+          ),
+          const SizedBox(
+            height: 30,
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.grey,
+            ),
+            onPressed: () {},
+            child: const Text(
+              '탐방 장소 목록',
+              style: TextStyle(
+                color: Colors.black,
+                fontSize: 30,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
         ],
       ),
     );

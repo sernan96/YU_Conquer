@@ -1,44 +1,50 @@
 import 'package:flutter/material.dart';
-import 'dart:async';
-import 'dart:convert';
-import 'package:http/http.dart' as http;
+import 'package:firebase_auth/firebase_auth.dart';
 
-void main() {
-  runApp(const LoginApp());
-}
-
-class LoginApp extends StatelessWidget {
-  const LoginApp({Key? key}) : super(key: key);
+class LoginPage extends StatefulWidget {
+  const LoginPage({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    return const LogIn();
-  }
+  State<LoginPage> createState() => _LoginPageState();
 }
 
-class LogIn extends StatefulWidget {
-  const LogIn({Key? key}) : super(key: key);
+class _LoginPageState extends State<LoginPage> {
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+  String errorMessage = '';
 
-  @override
-  State<LogIn> createState() => _LogInState();
-}
-
-class _LogInState extends State<LogIn> {
-  final TextEditingController IDController = TextEditingController();
-  final TextEditingController PWController = TextEditingController();
-  /*Future<void> sendData() async {
-    var response = await http.post(
-      Uri.parse('http://localhost:3000/'),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-      body: jsonEncode(<String, String>{
-        'email': IDController.text,
-        'password': PWController.text,
-      }),
-    );
+  Future<void> signInWithEmailAndPassword() async {
+    try {
+      UserCredential userCredential =
+          await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: emailController.text,
+        password: passwordController.text,
+      );
+      if (userCredential.user != null) {
+        Navigator.pushNamed(context, '/home_login');
+      }
+    } on FirebaseAuthException catch (e) {
+      // Firebase Auth 오류 메시지 처리
+      setState(() {
+        switch (e.code) {
+          case 'wrong-password':
+            errorMessage = '잘못된 비밀번호입니다.';
+            break;
+          case 'invalid-email':
+            errorMessage = '유효하지 않은 이메일 형식입니다.';
+            break;
+          default:
+            errorMessage = '사용자를 찾을 수 없습니다.';
+        }
+      });
+    } catch (e) {
+      // 기타 일반 예외 처리
+      setState(() {
+        errorMessage = '알 수 없는 오류가 발생했습니다: ${e.toString()}';
+      });
+    }
   }
-*/
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -71,6 +77,14 @@ class _LogInState extends State<LogIn> {
       ),
       body: Column(
         children: [
+          if (errorMessage.isNotEmpty)
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                errorMessage,
+                style: const TextStyle(color: Colors.red),
+              ),
+            ),
           Form(
             child: Container(
               padding: const EdgeInsets.all(40.0),
@@ -78,7 +92,7 @@ class _LogInState extends State<LogIn> {
                 child: Column(
                   children: [
                     TextField(
-                      controller: IDController,
+                      controller: emailController,
                       decoration: const InputDecoration(
                         labelText: 'Email',
                         fillColor: Color.fromARGB(255, 199, 195, 195),
@@ -87,28 +101,22 @@ class _LogInState extends State<LogIn> {
                       ),
                       keyboardType: TextInputType.emailAddress,
                     ),
-                    const SizedBox(
-                      height: 20,
-                    ),
+                    const SizedBox(height: 20),
                     TextField(
-                      controller: PWController,
+                      controller: passwordController,
                       decoration: const InputDecoration(
                         labelText: 'Password',
                         fillColor: Color.fromARGB(255, 199, 195, 195),
                         filled: true,
                       ),
-                      keyboardType: TextInputType.emailAddress,
+                      keyboardType: TextInputType.visiblePassword,
                       obscureText: true,
                     ),
-                    const SizedBox(
-                      height: 35,
-                    ),
+                    const SizedBox(height: 35),
                     Row(
                       children: [
                         TextButton(
-                          onPressed: () {
-                            Navigator.pushNamed(context, '/home_page_login');
-                          },
+                          onPressed: signInWithEmailAndPassword,
                           child: const Text(
                             '로그인',
                             style: TextStyle(
