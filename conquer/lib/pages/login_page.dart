@@ -12,6 +12,7 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   String errorMessage = '';
+  String resetEmailMessage = '';
 
   Future<void> signInWithEmailAndPassword() async {
     try {
@@ -41,6 +42,34 @@ class _LoginPageState extends State<LoginPage> {
       // 기타 일반 예외 처리
       setState(() {
         errorMessage = '알 수 없는 오류가 발생했습니다: ${e.toString()}';
+      });
+    }
+  }
+
+  Future<void> resetPassword() async {
+    try {
+      await FirebaseAuth.instance.sendPasswordResetEmail(
+        email: emailController.text,
+      );
+      setState(() {
+        resetEmailMessage = '비밀번호 재설정 이메일을 보냈습니다.';
+      });
+    } on FirebaseAuthException catch (e) {
+      setState(() {
+        switch (e.code) {
+          case 'invalid-email':
+            resetEmailMessage = '유효하지 않은 이메일 형식입니다.';
+            break;
+          case 'user-not-found':
+            resetEmailMessage = '등록되지 않은 이메일입니다.';
+            break;
+          default:
+            resetEmailMessage = '비밀번호 재설정 이메일을 보내는 데 실패했습니다: ${e.code}';
+        }
+      });
+    } catch (e) {
+      setState(() {
+        resetEmailMessage = '알 수 없는 오류가 발생했습니다: ${e.toString()}';
       });
     }
   }
@@ -83,6 +112,14 @@ class _LoginPageState extends State<LoginPage> {
               child: Text(
                 errorMessage,
                 style: const TextStyle(color: Colors.red),
+              ),
+            ),
+          if (resetEmailMessage.isNotEmpty)
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                resetEmailMessage,
+                style: const TextStyle(color: Colors.green),
               ),
             ),
           Form(
@@ -141,11 +178,9 @@ class _LoginPageState extends State<LoginPage> {
                             ),
                           ),
                         ),
-                        const Text(
-                          " / ",
-                        ),
+                        const Text(" / "),
                         TextButton(
-                          onPressed: () {},
+                          onPressed: resetPassword,
                           child: const Text(
                             '비밀번호를 찾고 싶어요',
                             style: TextStyle(
@@ -153,7 +188,7 @@ class _LoginPageState extends State<LoginPage> {
                               fontWeight: FontWeight.w600,
                             ),
                           ),
-                        )
+                        ),
                       ],
                     ),
                   ],

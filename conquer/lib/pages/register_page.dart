@@ -81,7 +81,15 @@ class _RegisterPageState extends State<RegisterPage> {
       // 회원가입이 성공적으로 완료되면 홈 페이지로 이동
       print('회원가입 성공: ${userCredential.user!.uid}');
       if (!mounted) return;
-      Navigator.pushNamed(context, '/home_login');
+      setState(() {
+        errorMessage = '회원가입 성공! 로그인하세요.';
+      });
+
+      // 500밀리초 대기 후 현재 페이지를 닫음
+      Future.delayed(const Duration(milliseconds: 500), () {
+        if (!mounted) return;
+        Navigator.pop(context);
+      });
     } on FirebaseAuthException catch (e) {
       // Firebase Auth 오류 메시지 처리
       setState(() {
