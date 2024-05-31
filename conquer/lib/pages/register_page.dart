@@ -17,6 +17,7 @@ class _RegisterPageState extends State<RegisterPage> {
   String errorMessage = '';
 
   Future<void> regSendData() async {
+    print("regSendData called");
     setState(() {
       errorMessage = '';
     });
@@ -28,6 +29,7 @@ class _RegisterPageState extends State<RegisterPage> {
       setState(() {
         errorMessage = '이메일 형식이 유효하지 않습니다.';
       });
+      print("Invalid email format");
       return;
     }
 
@@ -36,6 +38,7 @@ class _RegisterPageState extends State<RegisterPage> {
       setState(() {
         errorMessage = '사용자 이름을 입력해주세요.';
       });
+      print("Username is empty");
       return;
     }
 
@@ -44,6 +47,7 @@ class _RegisterPageState extends State<RegisterPage> {
       setState(() {
         errorMessage = '비밀번호가 일치하지 않습니다.';
       });
+      print("Passwords do not match");
       return;
     }
 
@@ -55,6 +59,7 @@ class _RegisterPageState extends State<RegisterPage> {
       setState(() {
         errorMessage = '비밀번호가 타당성 요구사항을 충족하지 않습니다.';
       });
+      print("Invalid password format");
       return;
     }
 
@@ -73,6 +78,8 @@ class _RegisterPageState extends State<RegisterPage> {
           .set({
         'username': regUserNameController.text,
         'email': regEmailController.text,
+        'Level': "영린이",
+        'Exp': 0,
       });
 
       // 사용자 이름을 업데이트
@@ -80,17 +87,24 @@ class _RegisterPageState extends State<RegisterPage> {
 
       // 회원가입이 성공적으로 완료되면 홈 페이지로 이동
       print('회원가입 성공: ${userCredential.user!.uid}');
-      if (!mounted) return;
+      if (!mounted) {
+        print("Widget is not mounted");
+        return;
+      }
+
       setState(() {
-        errorMessage = '회원가입 성공! 로그인하세요.';
+        errorMessage = '회원가입 성공! 환영합니다~';
       });
 
       // 500밀리초 대기 후 현재 페이지를 닫음
-      Future.delayed(const Duration(milliseconds: 500), () {
-        if (!mounted) return;
-        Navigator.pop(context);
-      });
+      await Future.delayed(const Duration(milliseconds: 300));
+      if (!mounted) {
+        print("Widget is not mounted after delay");
+        return;
+      }
+      Navigator.pushNamed(context, '/home_login');
     } on FirebaseAuthException catch (e) {
+      print("FirebaseAuthException: ${e.code}");
       // Firebase Auth 오류 메시지 처리
       setState(() {
         switch (e.code) {
@@ -107,13 +121,14 @@ class _RegisterPageState extends State<RegisterPage> {
             errorMessage = '비밀번호가 너무 약합니다.';
             break;
           default:
-            errorMessage = '알 수 없는 Firebase Auth 오류가 발생했습니다: ${e.code}';
+            errorMessage = '알 수 없는 오류가 발생했습니다. ';
         }
       });
     } catch (e) {
+      print("Exception: ${e.toString()}");
       // 기타 일반 예외 처리
       setState(() {
-        errorMessage = '알 수 없는 오류가 발생했습니다: ${e.toString()}';
+        errorMessage = '알 수 없는 오류가 발생했습니다. ';
       });
     }
   }

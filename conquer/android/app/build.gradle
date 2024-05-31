@@ -71,6 +71,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-analytics:20.0.2' // Firebase 종속성 예시
     implementation 'com.google.firebase:firebase-auth:21.0.1' // Firebase Auth 종속성
     implementation 'com.google.firebase:firebase-firestore:24.0.1' // Firestore 종속성
+    implementation 'com.google.android.gms:play-services-base:18.0.1'
     // 다른 종속성들
 }
 

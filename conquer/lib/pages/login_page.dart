@@ -41,7 +41,7 @@ class _LoginPageState extends State<LoginPage> {
     } catch (e) {
       // 기타 일반 예외 처리
       setState(() {
-        errorMessage = '알 수 없는 오류가 발생했습니다: ${e.toString()}';
+        errorMessage = '알 수 없는 오류가 발생했습니다.';
       });
     }
   }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class HomePageLogin extends StatelessWidget {
   const HomePageLogin({Key? key}) : super(key: key);
@@ -8,6 +9,72 @@ class HomePageLogin extends StatelessWidget {
     await FirebaseAuth.instance.signOut();
     Navigator.pushNamedAndRemoveUntil(
         context, '/home', (Route<dynamic> route) => false);
+  }
+
+  void _showLocationList(BuildContext context) async {
+    final QuerySnapshot snapshot =
+        await FirebaseFirestore.instance.collection('locationList').get();
+
+    final List<DocumentSnapshot> documents = snapshot.docs;
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return Dialog(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: documents.map((doc) {
+              final data = doc.data() as Map<String, dynamic>;
+              return ListTile(
+                title: Text(data['locationName'] ?? 'Unknown Location'),
+                onTap: () => _showLocationDetails(context, data),
+              );
+            }).toList(),
+          ),
+        );
+      },
+    );
+  }
+
+  void _showLocationDetails(BuildContext context, Map<String, dynamic> data) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return Dialog(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Align(
+                  alignment: Alignment.topRight,
+                  child: IconButton(
+                    icon: const Icon(Icons.close),
+                    onPressed: () => Navigator.of(context).pop(),
+                  ),
+                ),
+                Text(
+                  "Exp: ${data['Exp'] ?? 'N/A'}",
+                  style: const TextStyle(
+                      fontSize: 20, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  "Address: ${data['locationAddress'] ?? 'No Address Provided'}",
+                  style: const TextStyle(fontSize: 16),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  "Information: ${data['locationInformation'] ?? 'No Information Provided'}",
+                  style: const TextStyle(fontSize: 16),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
   }
 
   @override
@@ -77,7 +144,7 @@ class HomePageLogin extends StatelessWidget {
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.grey,
             ),
-            onPressed: () {},
+            onPressed: () => _showLocationList(context),
             child: const Text(
               '탐방 장소 목록',
               style: TextStyle(
