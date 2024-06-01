@@ -21,15 +21,18 @@ class HomePageLogin extends StatelessWidget {
       context: context,
       builder: (context) {
         return Dialog(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: documents.map((doc) {
-              final data = doc.data() as Map<String, dynamic>;
-              return ListTile(
-                title: Text(data['locationName'] ?? 'Unknown Location'),
-                onTap: () => _showLocationDetails(context, data),
-              );
-            }).toList(),
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: documents.map((doc) {
+                final data = doc.data() as Map<String, dynamic>;
+                return ListTile(
+                  title: Text(data['locationName'] ?? 'Unknown Location'),
+                  onTap: () => _showLocationDetails(context, data),
+                );
+              }).toList(),
+            ),
           ),
         );
       },
@@ -54,6 +57,14 @@ class HomePageLogin extends StatelessWidget {
                     onPressed: () => Navigator.of(context).pop(),
                   ),
                 ),
+                if (data['imageFileName'] != null)
+                  Image.asset(
+                    'assets/images/${data['imageFileName']}',
+                    height: 200,
+                    width: 200,
+                    fit: BoxFit.cover,
+                  ),
+                const SizedBox(height: 8),
                 Text(
                   "Exp: ${data['Exp'] ?? 'N/A'}",
                   style: const TextStyle(
@@ -72,6 +83,24 @@ class HomePageLogin extends StatelessWidget {
               ],
             ),
           ),
+        );
+      },
+    );
+  }
+
+  void _showErrorDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Error'),
+          content: const Text('현재 위치 파악이 불가능합니다.'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('OK'),
+            ),
+          ],
         );
       },
     );
@@ -105,30 +134,49 @@ class HomePageLogin extends StatelessWidget {
           ),
         ],
       ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          Image.asset(
-            'assets/images/logo.jpg',
-            width: 330,
-            height: 330,
-          ),
-          const SizedBox(
-            height: 30,
-          ),
-          Container(
-            decoration: BoxDecoration(
-              color: Colors.grey[200],
-              borderRadius: BorderRadius.circular(10),
+      body: Center(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Image.asset(
+              'assets/images/logo.jpg',
+              width: 330,
+              height: 330,
             ),
-            child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF73D7F7),
+            const SizedBox(
+              height: 30,
+            ),
+            Container(
+              decoration: BoxDecoration(
+                color: Colors.grey[200],
+                borderRadius: BorderRadius.circular(10),
               ),
-              onPressed: () {},
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF73D7F7),
+                ),
+                onPressed: () => _showErrorDialog(context),
+                child: const Text(
+                  '탐방 완료',
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 30,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(
+              height: 30,
+            ),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.grey,
+              ),
+              onPressed: () => _showLocationList(context),
               child: const Text(
-                '탐방 완료',
+                '탐방 장소 목록',
                 style: TextStyle(
                   color: Colors.black,
                   fontSize: 30,
@@ -136,25 +184,8 @@ class HomePageLogin extends StatelessWidget {
                 ),
               ),
             ),
-          ),
-          const SizedBox(
-            height: 30,
-          ),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.grey,
-            ),
-            onPressed: () => _showLocationList(context),
-            child: const Text(
-              '탐방 장소 목록',
-              style: TextStyle(
-                color: Colors.black,
-                fontSize: 30,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
