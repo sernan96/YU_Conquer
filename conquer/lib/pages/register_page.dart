@@ -244,7 +244,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   fillColor: Color.fromARGB(255, 199, 195, 195),
                   filled: true,
                   hintText: '규칙: 최소 8자 이상, 최소 하나의 숫자, 하나의 특수 문자 포함',
-                  hintStyle: TextStyle(fontSize: 13),
+                  hintStyle: TextStyle(fontSize: 10),
                 ),
                 keyboardType: TextInputType.visiblePassword,
                 obscureText: true,

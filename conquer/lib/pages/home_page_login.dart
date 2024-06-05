@@ -106,16 +106,76 @@ class HomePageLogin extends StatelessWidget {
     );
   }
 
+  void _showUserDetailsDialog(BuildContext context) async {
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      final DocumentSnapshot userSnapshot = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(user.uid)
+          .get();
+
+      final userData = userSnapshot.data() as Map<String, dynamic>?;
+
+      if (userData != null) {
+        showDialog(
+          context: context,
+          builder: (context) {
+            return Dialog(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Align(
+                      alignment: Alignment.topRight,
+                      child: IconButton(
+                        icon: const Icon(Icons.close),
+                        onPressed: () => Navigator.of(context).pop(),
+                      ),
+                    ),
+                    Text(
+                      "Username: ${userData['username'] ?? 'N/A'}",
+                      style: const TextStyle(
+                          fontSize: 20, fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      "Email: ${user.email ?? 'N/A'}",
+                      style: const TextStyle(fontSize: 16),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      "Exp: ${userData['Exp'] ?? 'N/A'}",
+                      style: const TextStyle(fontSize: 16),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      "Level: ${userData['Level'] ?? 'N/A'}",
+                      style: const TextStyle(fontSize: 16),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
         centerTitle: true,
-        leading: const Icon(
-          Icons.home_filled,
-          color: Colors.black,
-          size: 40,
+        leading: TextButton(
+          onPressed: () => _showUserDetailsDialog(context),
+          child: const Text(
+            'MY',
+            style: TextStyle(color: Colors.black, fontSize: 18),
+          ),
         ),
         title: const Text(
           '영남이의 모험',
