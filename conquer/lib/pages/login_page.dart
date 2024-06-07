@@ -64,12 +64,12 @@ class _LoginPageState extends State<LoginPage> {
             resetEmailMessage = '등록되지 않은 이메일입니다.';
             break;
           default:
-            resetEmailMessage = '비밀번호 재설정 이메일을 보내는 데 실패했습니다: ${e.code}';
+            resetEmailMessage = '비밀번호 재설정 이메일을 보내는 데 실패했습니다!';
         }
       });
     } catch (e) {
       setState(() {
-        resetEmailMessage = '알 수 없는 오류가 발생했습니다: ${e.toString()}';
+        resetEmailMessage = '알 수 없는 오류가 발생했습니다';
       });
     }
   }
